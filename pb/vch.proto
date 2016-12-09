@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package pb;
+
+service VCH {
+  rpc Tunnel(TunnelRequest) returns (stream TunnelResponse) {}
+}
+
+message NLPResponse {
+  bytes body = 1;
+}
+
+message TunnelRequest {}
+
+message TunnelResponse {
+  oneof event {
+    NLPResponse response = 1;
+  }
+}
