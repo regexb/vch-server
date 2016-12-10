@@ -6,8 +6,18 @@ service VCH {
   rpc Tunnel(TunnelRequest) returns (stream TunnelResponse) {}
 }
 
+message Entity {
+  string type = 1;
+  string value = 2;
+}
+
+message Intent {
+  string type = 1;
+  repeated Entity entities = 2;
+}
+
 message NLPResponse {
-  bytes body = 1;
+  repeated Intent intents = 1;
 }
 
 message TunnelRequest {}

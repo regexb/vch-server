@@ -1,5 +1,9 @@
 package tunnel
 
+import (
+	"github.com/begizi/vch-server/luis"
+)
+
 /*
 Queue Interface
 ---------------
@@ -13,7 +17,7 @@ sending the message down to the client.
 */
 
 type NLPResponse struct {
-	Body []byte `json:"body"`
+	Intents []*luis.CompositeEntity `json:"intents"`
 }
 
 type QueueMessage struct {

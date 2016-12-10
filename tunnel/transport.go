@@ -1,6 +1,7 @@
 package tunnel
 
 import (
+	"github.com/begizi/vch-server/luis"
 	"github.com/begizi/vch-server/pb"
 	"github.com/go-kit/kit/log"
 	"github.com/satori/go.uuid"
@@ -17,6 +18,28 @@ type VCHTunnelServer struct {
 	logger log.Logger
 }
 
+func entitiesToTransport(entities []*luis.CompositeEntityChild) []*pb.Entity {
+	var transportEntities []*pb.Entity
+	for _, e := range entities {
+		transportEntities = append(transportEntities, &pb.Entity{
+			Type:  e.Type,
+			Value: e.Value,
+		})
+	}
+	return transportEntities
+}
+
+func intentsToTransport(intents []*luis.CompositeEntity) []*pb.Intent {
+	var transportIntents []*pb.Intent
+	for _, i := range intents {
+		transportIntents = append(transportIntents, &pb.Intent{
+			Type:     i.ParentType,
+			Entities: entitiesToTransport(i.Children),
+		})
+	}
+	return transportIntents
+}
+
 func (s VCHTunnelServer) SendToStream(message NLPResponse) error {
 	sessions, err := s.sessions.List()
 	if err != nil {
@@ -27,7 +50,7 @@ func (s VCHTunnelServer) SendToStream(message NLPResponse) error {
 		session.Stream.Send(&pb.TunnelResponse{
 			Event: &pb.TunnelResponse_Response{
 				Response: &pb.NLPResponse{
-					Body: message.Body,
+					Intents: intentsToTransport(message.Intents),
 				},
 			},
 		})

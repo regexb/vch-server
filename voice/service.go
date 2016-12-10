@@ -1,7 +1,6 @@
 package voice
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/begizi/vch-server/gcp"
 	"github.com/begizi/vch-server/luis"
@@ -27,6 +26,10 @@ type basicService struct {
 	luis  *luis.Client
 }
 
+func processMissingEntities(intents []*luis.CompositeEntity) []*luis.CompositeEntity {
+	return intents
+}
+
 func (s basicService) Voice(_ context.Context, voice VoiceRequest) (*VoiceResponse, error) {
 	transcript, err := s.gcp.Convert(voice.Audio)
 	if err != nil {
@@ -36,22 +39,16 @@ func (s basicService) Voice(_ context.Context, voice VoiceRequest) (*VoiceRespon
 	resp, err := s.luis.Parse(transcript)
 	if err != nil {
 		return nil, fmt.Errorf("Luis Error: %v", err)
-
-	}
-
-	b, err := json.Marshal(resp)
-	if err != nil {
-		return nil, fmt.Errorf("Marshal Error: %v", err)
 	}
 
 	// Broadcast message with the data
 	err = s.queue.Broadcast(&tunnel.QueueMessage{
 		NLPResponse: tunnel.NLPResponse{
-			Body: b,
+			Intents: processMissingEntities(resp.CompositeEntities),
 		},
 	})
 	if err != nil {
 		return nil, err
 	}
-	return &VoiceResponse{200, resp}, nil
+	return &VoiceResponse{200, resp.CompositeEntities}, nil
 }
