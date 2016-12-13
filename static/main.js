@@ -75,15 +75,8 @@ var Speaking = {
         contentType: false,
         processData: false,
         type: 'POST',
-        success: function() {
+        complete: function() {
           recorder.clear();
-          speak.classList.remove('speak__loading');
-          speak.classList.remove('speak__waiting');
-          speak.removeEventListener('animationend', loadingAnimation, false);
-        },
-        failure: function() {
-          recorder.clear();
-          speak.classList.remove('speak__loading');
           speak.classList.remove('speak__waiting');
           speak.removeEventListener('animationend', loadingAnimation, false);
         }
