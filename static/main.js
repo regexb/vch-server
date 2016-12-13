@@ -35,7 +35,7 @@ function createRecorder() {
     function(stream) {
       var input = audioContext.createMediaStreamSource(stream);
       recorder = new Recorder(input);
-    }, () => {
+    }, function() {
       alert('This app is unable to work without microphone access.');
     }
   );
@@ -58,7 +58,7 @@ var Speaking = {
     speak.classList.add('speak__loading');
 
     recorder.stop();
-    recorder.exportWAV((audio) => {
+    recorder.exportWAV(function(audio) {
       audio.lastModifiedDate = new Date();
       audio.name = 'file';
 
