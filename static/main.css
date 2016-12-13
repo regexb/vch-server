@@ -115,6 +115,30 @@
   transform: rotate(-90deg);
 }
 
+.suggestion {
+  -webkit-transition: bottom 0,35s ease-in-out;
+  transition: bottom 0.35s ease-in-out;
+  background: #D4D4D4;
+  border-radius: 15px;
+  bottom: -100px;
+  color: #000;
+  display: inline-block;
+  font-family: 'Open Sans', sans-serif;
+  left: 50%;
+  opacity: 0.5;
+  padding: 10px;
+  position: absolute;
+  transform: translate(-50%, 0);
+}
+
+.suggestion__visible {
+  bottom: 40px;
+}
+
+.suggestion--icon {
+  margin-right: 10px;
+}
+
 @-webkit-keyframes pulse {
   0% {
     -webkit-transform: scale(0.9);

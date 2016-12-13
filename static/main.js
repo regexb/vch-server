@@ -1,6 +1,8 @@
 var API_URL = '/api';
 var speak;
 
+var GENERATION_DELAY = 2000
+
 document.addEventListener("DOMContentLoaded", function(event) {
   speak = document.querySelector('.speak');
   speak.addEventListener('mousedown', Speaking.start);
@@ -9,6 +11,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
   speak.addEventListener('mouseup', Speaking.finish);
   speak.addEventListener('touchend', Speaking.finish);
   speak.addEventListener('touchcancel', Speaking.finish);
+
+  generateSuggestion();
 });
 
 var AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -87,3 +91,17 @@ var Speaking = {
 
 createAudioContext();
 createRecorder();
+
+var suggestions = [
+  "Turn on the red and yellow light",
+  "Turn off all of the lights"
+];
+
+function generateSuggestion(delay) {
+  var suggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
+  var html = '<div class="suggestion"><i class="suggestion--icon fa fa-volume-up"></i>"' + suggestion + '"</div>';
+  speak.insertAdjacentHTML('afterend', html);
+  setTimeout(function() {
+    document.querySelector('.suggestion').classList.add('suggestion__visible');
+  }, delay || GENERATION_DELAY);
+}
