@@ -107,8 +107,14 @@ func main() {
 			voiceHandler = voice.MakeVoiceHTTPServer(ctx, endpoints, logger)
 		}
 
+		mux := http.NewServeMux()
+
+		fs := http.FileServer(http.Dir("static"))
+		mux.Handle("/", fs)
+		mux.Handle("/api/", accessControl(voiceHandler))
+
 		logger.Log("msg", "HTTP Server Started", "port", port)
-		errc <- http.ListenAndServe(":"+port, accessControl(voiceHandler))
+		errc <- http.ListenAndServe(":"+port, mux)
 	}()
 
 	// gRPC transport
