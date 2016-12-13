@@ -2,6 +2,7 @@ package gcp
 
 import (
 	"context"
+	"time"
 
 	"google.golang.org/api/option"
 	"google.golang.org/api/transport"
@@ -24,6 +25,7 @@ func NewGCPSpeechConv() (*GCPSpeechConv, error) {
 		option.WithEndpoint("speech.googleapis.com:443"),
 		option.WithScopes("https://www.googleapis.com/auth/cloud-platform"),
 		option.WithServiceAccountFile("./credentials-key.json"),
+		option.WithGRPCDialOption(grpc.WithBackoffMaxDelay(5*time.Second)),
 	)
 	if err != nil {
 		return nil, err
