@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"bytes"
 	"fmt"
+	"github.com/begizi/wav"
 	"github.com/go-kit/kit/log"
 	httptransport "github.com/go-kit/kit/transport/http"
 	"github.com/gorilla/mux"
@@ -64,10 +66,17 @@ func DecodeHTTPVoiceRequest(_ context.Context, r *http.Request) (request interfa
 		return nil, fmt.Errorf("Read Error: %v", err)
 	}
 
-	req := VoiceRequest{
-		Audio: b,
+	newReader := bytes.NewReader(b)
+	wavReader, _ := wav.NewReader(newReader, newReader.Size())
+	sampleCount := wavReader.ChunkFmt.SampleRate
+	if sampleCount == 0 {
+		sampleCount = 44100
 	}
-	return req, nil
+
+	return VoiceRequest{
+		Audio:       b,
+		SampleCount: sampleCount,
+	}, nil
 }
 
 func EncodeHTTPVoiceResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {

@@ -31,7 +31,7 @@ func processMissingEntities(intents []*luis.CompositeEntity) []*luis.CompositeEn
 }
 
 func (s basicService) Voice(_ context.Context, voice VoiceRequest) (*VoiceResponse, error) {
-	transcript, err := s.gcp.Convert(voice.Audio)
+	transcript, err := s.gcp.Convert(voice.Audio, voice.SampleCount)
 	if err != nil {
 		return nil, err
 	}

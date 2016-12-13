@@ -34,8 +34,8 @@ func NewGCPSpeechConv() (*GCPSpeechConv, error) {
 	return &GCPSpeechConv{ctx, conn, client}, nil
 }
 
-func (gcp *GCPSpeechConv) Convert(data []byte) (string, error) {
-	resp, err := gcp.recognize(data)
+func (gcp *GCPSpeechConv) Convert(data []byte, sampleRate uint32) (string, error) {
+	resp, err := gcp.recognize(data, sampleRate)
 	if err != nil {
 		return "", err
 	}
@@ -57,11 +57,11 @@ func (gcp *GCPSpeechConv) Convert(data []byte) (string, error) {
 	return best.Transcript, nil
 }
 
-func (gcp *GCPSpeechConv) recognize(data []byte) (*speech.SyncRecognizeResponse, error) {
+func (gcp *GCPSpeechConv) recognize(data []byte, sampleRate uint32) (*speech.SyncRecognizeResponse, error) {
 	return gcp.client.SyncRecognize(gcp.ctx, &speech.SyncRecognizeRequest{
 		Config: &speech.RecognitionConfig{
 			Encoding:   speech.RecognitionConfig_LINEAR16,
-			SampleRate: 44100,
+			SampleRate: int32(sampleRate),
 		},
 		Audio: &speech.RecognitionAudio{
 			AudioSource: &speech.RecognitionAudio_Content{Content: data},

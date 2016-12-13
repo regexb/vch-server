@@ -1,7 +1,8 @@
 package voice
 
 type VoiceRequest struct {
-	Audio []byte
+	Audio       []byte
+	SampleCount uint32
 }
 
 type VoiceResponse struct {
